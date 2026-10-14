@@ -1,3 +1,115 @@
+# Hearth fork
+
+This is [chrisuthe/Ava-hearth](https://github.com/chrisuthe/Ava-hearth), a fork of
+[brownard/Ava](https://github.com/brownard/Ava) that [Hearth](https://github.com/chrisuthe/Hearth-Home)
+builds into its Android app. Ava is licensed under Apache-2.0 (see `LICENSE.md`), and so is this fork.
+The `hearth` branch carries our changes; `master` tracks upstream. `UPSTREAM_PIN` records the upstream
+commit the branch is based on.
+
+## Changes in this fork
+
+Apache-2.0 §4(b) asks for a notice on changed files. In commit `938b4c6` we:
+
+- **Moved** the device code (`esphome`, `server`, `wakewords`, `nsd`, three helpers in `settings` and
+  `utils`), its tests and its assets from `:app` into a new `:satellite` library module. Package names
+  and file contents are unchanged; each file listed below moved without edits.
+- **Added** `satellite/build.gradle.kts`, `satellite/consumer-rules.pro`, `satellite/.gitignore`,
+  `satellite/src/main/AndroidManifest.xml` and `UPSTREAM_PIN`.
+- **Changed** `settings.gradle.kts` and `app/build.gradle.kts` to include the module and depend on it,
+  and `.github/workflows/test.yml` to run its tests.
+
+<details>
+<summary>The 80 moved files</summary>
+
+| From | To |
+|---|---|
+| `app/src/androidTest/assets/hey_jarvis.json` | `satellite/src/androidTest/assets/hey_jarvis.json` |
+| `app/src/androidTest/assets/hey_jarvis.tflite` | `satellite/src/androidTest/assets/hey_jarvis.tflite` |
+| `app/src/androidTest/assets/wakeWords/computer.json` | `satellite/src/androidTest/assets/wakeWords/computer.json` |
+| `app/src/androidTest/assets/wakeWords/computer.tflite` | `satellite/src/androidTest/assets/wakeWords/computer.tflite` |
+| `app/src/androidTest/assets/wakeWords/computer.wav` | `satellite/src/androidTest/assets/wakeWords/computer.wav` |
+| `app/src/androidTest/assets/wakeWords/okay_nabu.json` | `satellite/src/androidTest/assets/wakeWords/okay_nabu.json` |
+| `app/src/androidTest/assets/wakeWords/okay_nabu.tflite` | `satellite/src/androidTest/assets/wakeWords/okay_nabu.tflite` |
+| `app/src/androidTest/assets/wakeWords/okay_nabu.wav` | `satellite/src/androidTest/assets/wakeWords/okay_nabu.wav` |
+| `app/src/androidTest/java/com/example/ava/AssetWakeWordProviderTest.kt` | `satellite/src/androidTest/java/com/example/ava/AssetWakeWordProviderTest.kt` |
+| `app/src/androidTest/java/com/example/ava/MicroWakeWordTest.kt` | `satellite/src/androidTest/java/com/example/ava/MicroWakeWordTest.kt` |
+| `app/src/main/assets/sounds/LICENSE.md` | `satellite/src/main/assets/sounds/LICENSE.md` |
+| `app/src/main/assets/sounds/error.flac` | `satellite/src/main/assets/sounds/error.flac` |
+| `app/src/main/assets/sounds/timer_finished.flac` | `satellite/src/main/assets/sounds/timer_finished.flac` |
+| `app/src/main/assets/sounds/wake_word_triggered.flac` | `satellite/src/main/assets/sounds/wake_word_triggered.flac` |
+| `app/src/main/assets/stopWords/stop.json` | `satellite/src/main/assets/stopWords/stop.json` |
+| `app/src/main/assets/stopWords/stop.tflite` | `satellite/src/main/assets/stopWords/stop.tflite` |
+| `app/src/main/assets/wakeWords/alexa.json` | `satellite/src/main/assets/wakeWords/alexa.json` |
+| `app/src/main/assets/wakeWords/alexa.tflite` | `satellite/src/main/assets/wakeWords/alexa.tflite` |
+| `app/src/main/assets/wakeWords/choo_choo_homie.json` | `satellite/src/main/assets/wakeWords/choo_choo_homie.json` |
+| `app/src/main/assets/wakeWords/choo_choo_homie.tflite` | `satellite/src/main/assets/wakeWords/choo_choo_homie.tflite` |
+| `app/src/main/assets/wakeWords/hey_home_assistant.json` | `satellite/src/main/assets/wakeWords/hey_home_assistant.json` |
+| `app/src/main/assets/wakeWords/hey_home_assistant.tflite` | `satellite/src/main/assets/wakeWords/hey_home_assistant.tflite` |
+| `app/src/main/assets/wakeWords/hey_jarvis.json` | `satellite/src/main/assets/wakeWords/hey_jarvis.json` |
+| `app/src/main/assets/wakeWords/hey_jarvis.tflite` | `satellite/src/main/assets/wakeWords/hey_jarvis.tflite` |
+| `app/src/main/assets/wakeWords/hey_luna.json` | `satellite/src/main/assets/wakeWords/hey_luna.json` |
+| `app/src/main/assets/wakeWords/hey_luna.tflite` | `satellite/src/main/assets/wakeWords/hey_luna.tflite` |
+| `app/src/main/assets/wakeWords/hey_mycroft.json` | `satellite/src/main/assets/wakeWords/hey_mycroft.json` |
+| `app/src/main/assets/wakeWords/hey_mycroft.tflite` | `satellite/src/main/assets/wakeWords/hey_mycroft.tflite` |
+| `app/src/main/assets/wakeWords/hey_peppa_pig.json` | `satellite/src/main/assets/wakeWords/hey_peppa_pig.json` |
+| `app/src/main/assets/wakeWords/hey_peppa_pig.tflite` | `satellite/src/main/assets/wakeWords/hey_peppa_pig.tflite` |
+| `app/src/main/assets/wakeWords/okay_computer.json` | `satellite/src/main/assets/wakeWords/okay_computer.json` |
+| `app/src/main/assets/wakeWords/okay_computer.tflite` | `satellite/src/main/assets/wakeWords/okay_computer.tflite` |
+| `app/src/main/assets/wakeWords/okay_nabu.json` | `satellite/src/main/assets/wakeWords/okay_nabu.json` |
+| `app/src/main/assets/wakeWords/okay_nabu.tflite` | `satellite/src/main/assets/wakeWords/okay_nabu.tflite` |
+| `app/src/main/java/com/example/ava/esphome/EspHomeDevice.kt` | `satellite/src/main/java/com/example/ava/esphome/EspHomeDevice.kt` |
+| `app/src/main/java/com/example/ava/esphome/android/logger/TimberLogger.kt` | `satellite/src/main/java/com/example/ava/esphome/android/logger/TimberLogger.kt` |
+| `app/src/main/java/com/example/ava/esphome/android/mediaplayer/AudioFocusRegistration.kt` | `satellite/src/main/java/com/example/ava/esphome/android/mediaplayer/AudioFocusRegistration.kt` |
+| `app/src/main/java/com/example/ava/esphome/android/mediaplayer/Media3MediaPlayer.kt` | `satellite/src/main/java/com/example/ava/esphome/android/mediaplayer/Media3MediaPlayer.kt` |
+| `app/src/main/java/com/example/ava/esphome/android/microphone/AudioRecordMicrophone.kt` | `satellite/src/main/java/com/example/ava/esphome/android/microphone/AudioRecordMicrophone.kt` |
+| `app/src/main/java/com/example/ava/esphome/android/wakeword/MicroWakeWord.kt` | `satellite/src/main/java/com/example/ava/esphome/android/wakeword/MicroWakeWord.kt` |
+| `app/src/main/java/com/example/ava/esphome/entities/Entity.kt` | `satellite/src/main/java/com/example/ava/esphome/entities/Entity.kt` |
+| `app/src/main/java/com/example/ava/esphome/entities/MediaPlayerEntity.kt` | `satellite/src/main/java/com/example/ava/esphome/entities/MediaPlayerEntity.kt` |
+| `app/src/main/java/com/example/ava/esphome/entities/SwitchEntity.kt` | `satellite/src/main/java/com/example/ava/esphome/entities/SwitchEntity.kt` |
+| `app/src/main/java/com/example/ava/esphome/logger/Logger.kt` | `satellite/src/main/java/com/example/ava/esphome/logger/Logger.kt` |
+| `app/src/main/java/com/example/ava/esphome/mediaplayer/MediaPlayer.kt` | `satellite/src/main/java/com/example/ava/esphome/mediaplayer/MediaPlayer.kt` |
+| `app/src/main/java/com/example/ava/esphome/microphone/Microphone.kt` | `satellite/src/main/java/com/example/ava/esphome/microphone/Microphone.kt` |
+| `app/src/main/java/com/example/ava/esphome/voiceassistant/Announcement.kt` | `satellite/src/main/java/com/example/ava/esphome/voiceassistant/Announcement.kt` |
+| `app/src/main/java/com/example/ava/esphome/voiceassistant/VoiceAssistant.kt` | `satellite/src/main/java/com/example/ava/esphome/voiceassistant/VoiceAssistant.kt` |
+| `app/src/main/java/com/example/ava/esphome/voiceassistant/VoiceInput.kt` | `satellite/src/main/java/com/example/ava/esphome/voiceassistant/VoiceInput.kt` |
+| `app/src/main/java/com/example/ava/esphome/voiceassistant/VoiceOutput.kt` | `satellite/src/main/java/com/example/ava/esphome/voiceassistant/VoiceOutput.kt` |
+| `app/src/main/java/com/example/ava/esphome/voiceassistant/VoicePipeline.kt` | `satellite/src/main/java/com/example/ava/esphome/voiceassistant/VoicePipeline.kt` |
+| `app/src/main/java/com/example/ava/esphome/voiceassistant/VoiceTimer.kt` | `satellite/src/main/java/com/example/ava/esphome/voiceassistant/VoiceTimer.kt` |
+| `app/src/main/java/com/example/ava/esphome/wakeword/WakeWord.kt` | `satellite/src/main/java/com/example/ava/esphome/wakeword/WakeWord.kt` |
+| `app/src/main/java/com/example/ava/nsd/NsdRegistration.kt` | `satellite/src/main/java/com/example/ava/nsd/NsdRegistration.kt` |
+| `app/src/main/java/com/example/ava/nsd/VoiceSatelliteNsd.kt` | `satellite/src/main/java/com/example/ava/nsd/VoiceSatelliteNsd.kt` |
+| `app/src/main/java/com/example/ava/server/ClientConnection.kt` | `satellite/src/main/java/com/example/ava/server/ClientConnection.kt` |
+| `app/src/main/java/com/example/ava/server/Server.kt` | `satellite/src/main/java/com/example/ava/server/Server.kt` |
+| `app/src/main/java/com/example/ava/settings/SettingState.kt` | `satellite/src/main/java/com/example/ava/settings/SettingState.kt` |
+| `app/src/main/java/com/example/ava/utils/AsyncUtils.kt` | `satellite/src/main/java/com/example/ava/utils/AsyncUtils.kt` |
+| `app/src/main/java/com/example/ava/utils/BufferUtils.kt` | `satellite/src/main/java/com/example/ava/utils/BufferUtils.kt` |
+| `app/src/main/java/com/example/ava/wakewords/microwakeword/MicroWakeWordDetector.kt` | `satellite/src/main/java/com/example/ava/wakewords/microwakeword/MicroWakeWordDetector.kt` |
+| `app/src/main/java/com/example/ava/wakewords/microwakeword/MicroWakeWordModel.kt` | `satellite/src/main/java/com/example/ava/wakewords/microwakeword/MicroWakeWordModel.kt` |
+| `app/src/main/java/com/example/ava/wakewords/microwakeword/TensorBuffer.kt` | `satellite/src/main/java/com/example/ava/wakewords/microwakeword/TensorBuffer.kt` |
+| `app/src/main/java/com/example/ava/wakewords/models/WakeWord.kt` | `satellite/src/main/java/com/example/ava/wakewords/models/WakeWord.kt` |
+| `app/src/main/java/com/example/ava/wakewords/providers/AssetWakeWordProvider.kt` | `satellite/src/main/java/com/example/ava/wakewords/providers/AssetWakeWordProvider.kt` |
+| `app/src/main/java/com/example/ava/wakewords/providers/DocumentTreeWakeWordProvider.kt` | `satellite/src/main/java/com/example/ava/wakewords/providers/DocumentTreeWakeWordProvider.kt` |
+| `app/src/main/java/com/example/ava/wakewords/providers/WakeWordProvider.kt` | `satellite/src/main/java/com/example/ava/wakewords/providers/WakeWordProvider.kt` |
+| `app/src/test/java/com/example/ava/AnnouncementTest.kt` | `satellite/src/test/java/com/example/ava/AnnouncementTest.kt` |
+| `app/src/test/java/com/example/ava/VoiceAssistantTest.kt` | `satellite/src/test/java/com/example/ava/VoiceAssistantTest.kt` |
+| `app/src/test/java/com/example/ava/VoiceAssistantTimerTest.kt` | `satellite/src/test/java/com/example/ava/VoiceAssistantTimerTest.kt` |
+| `app/src/test/java/com/example/ava/VoiceInputTest.kt` | `satellite/src/test/java/com/example/ava/VoiceInputTest.kt` |
+| `app/src/test/java/com/example/ava/VoiceOutputTest.kt` | `satellite/src/test/java/com/example/ava/VoiceOutputTest.kt` |
+| `app/src/test/java/com/example/ava/VoicePipelineTest.kt` | `satellite/src/test/java/com/example/ava/VoicePipelineTest.kt` |
+| `app/src/test/java/com/example/ava/VoiceTimerTest.kt` | `satellite/src/test/java/com/example/ava/VoiceTimerTest.kt` |
+| `app/src/test/java/com/example/ava/stubs/StubMediaPlayer.kt` | `satellite/src/testShared/java/com/example/ava/stubs/StubMediaPlayer.kt` |
+| `app/src/test/java/com/example/ava/stubs/StubMicrophone.kt` | `satellite/src/testShared/java/com/example/ava/stubs/StubMicrophone.kt` |
+| `app/src/test/java/com/example/ava/stubs/StubSetting.kt` | `satellite/src/testShared/java/com/example/ava/stubs/StubSetting.kt` |
+| `app/src/test/java/com/example/ava/stubs/StubVoiceInput.kt` | `satellite/src/testShared/java/com/example/ava/stubs/StubVoiceInput.kt` |
+| `app/src/test/java/com/example/ava/stubs/StubVoiceOutput.kt` | `satellite/src/testShared/java/com/example/ava/stubs/StubVoiceOutput.kt` |
+| `app/src/test/java/com/example/ava/stubs/StubWakeWord.kt` | `satellite/src/testShared/java/com/example/ava/stubs/StubWakeWord.kt` |
+
+</details>
+
+The upstream README follows.
+
+---
+
 # Android Voice Assistant (Ava)
 
 Experimental Android voice assistant for [Home Assistant][homeassistant] that uses the [ESPHome][esphome] protocol.
