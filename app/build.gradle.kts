@@ -48,12 +48,15 @@ android {
     buildFeatures {
         compose = true
     }
+    // Stubs shared with :satellite's unit tests.
+    sourceSets["test"].kotlin.srcDir("../satellite/src/testShared/java")
 }
 
 dependencies {
 
     implementation(project(":esphomeproto"))
     implementation(project(":microfeatures"))
+    implementation(project(":satellite"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.lifecycle.service)

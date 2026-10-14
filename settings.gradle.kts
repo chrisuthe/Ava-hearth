@@ -23,3 +23,4 @@ rootProject.name = "Ava"
 include(":app")
 include(":esphomeproto")
 include(":microfeatures")
+include(":satellite")

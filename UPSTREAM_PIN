@@ -1,0 +1,18 @@
+upstream:    https://github.com/brownard/Ava.git
+upstream_sha: 2c76f5106597b309ab97d4d586c24c5d872c85ae
+upstream_subject: Fix local sound assets not playing by using DefaultMediaSource instead of ProgressiveMediaSource.
+pinned_at:   2026-10-13
+notes:
+  - This fork carries Hearth-specific patches on the `hearth` branch. `master` tracks upstream.
+  - The main patch moves the device code (`esphome`, `server`, `wakewords`, `nsd`, plus
+    three helpers and the assets) out of `:app` into the `:satellite` library module,
+    with package names unchanged. Hearth consumes `:esphomeproto`, `:microfeatures`
+    and `:satellite`; `:app` still builds against them.
+  - Rebase procedure (`git remote add upstream https://github.com/brownard/Ava.git` if missing):
+      1. `git fetch upstream`
+      2. `git rebase upstream/master`  (upstream edits to moved files follow the renames;
+         new upstream files under the moved packages need moving by hand)
+      3. `./gradlew testDebugUnitTest :app:assembleDebug`
+      4. Update `upstream_sha`, `upstream_subject`, `pinned_at` above
+      5. Force-push: `git push --force-with-lease origin hearth`
+  - DO NOT delete this file or the rebase tracking gets harder.
